@@ -1,6 +1,29 @@
 {
   "name": "el-plus-table-vue",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "private": false,
+  "main": "src/components/el-plus-table",
+  "author": "mccj",
+  "license": "MIT",
+  "description": "el-plus-table-vue",
+  "files": [
+    "dist/*",
+    "src/*"
+  ],
+  "homepage": "https://github.com/mccj/el-plus-table-vue",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mccj/el-plus-table-vue.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mccj/el-plus-table-vue/issues"
+  },
+  "keywords": [
+    "vue",
+    "element-plus",
+    "table",
+    "el-plus-table-vue"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",

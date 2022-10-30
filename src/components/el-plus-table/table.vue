@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onActivated, onMounted, watch, withDefaults, defineProps, defineEmits } from 'vue'
+import { reactive, ref, onActivated, onMounted, watch, withDefaults } from 'vue'
 import type { loadDataPage, loadDataCallback, dataFormatCallback } from './table'
 import { isPromise } from './table'
 
@@ -53,7 +53,7 @@ const props = withDefaults(defineProps<{
     // //     select: { type: Array, default: () => [] }, // 已选择的数据，与selection结合使用
     pageIndex: 1,
     pageSize: 10,
-    pageSizes: [10, 20, 50, 100],
+    pageSizes: () => [10, 20, 50, 100],
     filters: {},
     pageLayout: "total, sizes, prev, pager, next, jumper", // 分页需要显示的东西，默认全部
   })
