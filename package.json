@@ -1,13 +1,12 @@
 {
   "name": "el-plus-table-vue",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "main": "src/components/el-plus-table",
   "author": "mccj",
   "license": "MIT",
   "description": "el-plus-table-vue",
   "files": [
-    "dist/*",
     "src/*"
   ],
   "homepage": "https://github.com/mccj/el-plus-table-vue",

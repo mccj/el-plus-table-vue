@@ -1,4 +1,4 @@
-export interface loadDataPage {
+export type loadDataPage = {
     page: number,
     pageSize: number,
     skip: number
@@ -8,8 +8,10 @@ export interface loadDataPage {
 //     pageSize: number,
 //     skip: number
 // }
-export interface loadDataCallback  { Success: (data: any) => void, Fail: (reason: any) => void }
-export interface dataFormatCallback  { setData: (data: any[]) => void, setTotal?: (total: number) => void, setLoading?: (val: boolean) => void }
+export type loadDataCallback = { Success: (data: any) => void, Fail: (reason?: any) => void }
+export type dataFormatCallback = { SetData: (data: any[]) => void, SetTotal?: (total: number) => void, SetLoading?: (val: boolean) => void }
+// export type operationProperty = { LoadData?: (param: loadDataPage, fun: loadDataCallback) => void, Refresh?: () => void, Reload?: () => void }
+export type tableExpose = { Refresh: () => void, Reload: () => void };
 
 // export interface PaginationConfig {
 //     small?:boolean,// 是否使用小型分页样式	boolean	— false

@@ -1,6 +1,6 @@
 <template>
-    <div class="system-table-box" v-loading="listState.loading">
-        <!-- <slot name="tool" :State="listState" :Filters="filters" :Operation="{ QuerySearch: () => init() }">
+  <div class="system-table-box" v-loading="listState.loading">
+    <!-- <slot name="tool" :State="listState" :Filters="filters" :Operation="{ QuerySearch: () => init() }">
           </slot>
             <slot name="content" :State="listState" :DataTotal="innerTotal" :DataItem="innerData ?? innerDatas"
               :Operation="{ QuerySearch: () => init() }">
@@ -10,29 +10,29 @@
               </slot>
             </slot>
         -->
-        <el-table v-bind="$attrs" ref="table" class="system-table" border height="100%" :data="innerDatas"
-                  @selection-change="handleSelectionChange">
-            <el-table-column type="selection" align="center" width="50" v-if="showSelection" />
-            <el-table-column label="序号" width="60" align="center" v-if="showIndex">
-                <template #default="scope">
-                    {{ (currentPage - 1) * innerPageSize + scope.$index + 1 }}
-                </template>
-            </el-table-column>
-            <slot>
-                <el-table-column v-for="property in Object.keys(innerDatas.length > 0 ? innerDatas[0] : {})" :key="property"
-                                 :prop="property" :label="property" />
-            </slot>
-        </el-table>
-        <el-pagination v-if="showPage" background class="system-page" :layout="pageLayout" :page-sizes="pageSizes"
-                       :total="innerTotal" v-model:current-page="currentPage" v-model:page-size="innerPageSize"
-                       :default-page-size="pageSize" :default-current-page="currentPage">
-        </el-pagination>
-    </div>
+    <el-table v-bind="$attrs" ref="table" class="system-table" border height="100%" :data="innerDatas"
+      @selection-change="handleSelectionChange">
+      <el-table-column type="selection" align="center" width="50" v-if="showSelection" />
+      <el-table-column label="序号" width="60" align="center" v-if="showIndex">
+        <template #default="scope">
+          {{ (currentPage - 1) * innerPageSize + scope.$index + 1 }}
+        </template>
+      </el-table-column>
+      <slot>
+        <el-table-column v-for="property in Object.keys(innerDatas.length > 0 ? innerDatas[0] : {})" :key="property"
+          :prop="property" :label="property" />
+      </slot>
+    </el-table>
+    <el-pagination v-if="showPage" background class="system-page" :layout="pageLayout" :page-sizes="pageSizes"
+      :total="innerTotal" v-model:current-page="currentPage" v-model:page-size="innerPageSize"
+      :default-page-size="pageSize" :default-current-page="currentPage">
+    </el-pagination>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, onActivated, onMounted, watch, withDefaults } from 'vue'
-import type { loadDataPage, loadDataCallback, dataFormatCallback } from './table'
+import type { loadDataPage, loadDataCallback, dataFormatCallback, tableExpose } from './table'
 import { isPromise } from './table'
 
 const props = withDefaults(defineProps<{
@@ -43,11 +43,13 @@ const props = withDefaults(defineProps<{
   pageIndex?: number,
   pageSize?: number,
   pageSizes?: number[],
-  query?: (info: any) => any,
+  query?: (info: loadDataPage) => any,
   param?: object | (() => any),
   filters?: any,
   pageLayout?: string, // 分页需要显示的东西，默认全部
   dataFormat?: ((data: any, fun: dataFormatCallback) => void),
+  loadData?: ((param: loadDataPage, fun: loadDataCallback) => void),
+  // operation?: operationProperty
 }>(),
   {
     showSelection: false,// 是否展示选择框，默认否
@@ -121,8 +123,8 @@ watch(() => innerPageSize.value, (newValue, oldValue) => {
   }
 });
 
-onMounted(async () => {
-  await init()
+onMounted(() => {
+  init()
 });
 
 // 解决BUG：keep-alive组件使用时，表格浮层高度不对的问题
@@ -143,7 +145,7 @@ const handleSelectionChange = (val: []) => {
 //   //   icon: 'success'
 //   // })
 // }
-const init = async (done?: () => any) => {
+const init = (done?: () => any) => {
   // 清空列表数据
   // finished.value = false;
   listState.error = false;
@@ -252,7 +254,7 @@ const loadData = async (done?: () => any) => {
     }
     // debugger
     if (props.dataFormat) {
-      props.dataFormat(data, { setData: fun.setData, setTotal: fun.setTotal });
+      props.dataFormat(data, { SetData: fun.setData, SetTotal: fun.setTotal });
     } else {
       // debugger
       let tl = data.total ?? data.Total ?? data.totalCount;
@@ -357,26 +359,32 @@ const getData = (param: loadDataPage): Promise<any> => {
         }
       }
     }
-    emit("load-data", param, fun)
+    if (props.loadData) {
+      props.loadData(param, fun);
+    } else {
+      emit("load-data", param, fun)
+    }
   })
 };
+
+defineExpose<tableExpose>({ Refresh: init, Reload: loadDataDelay })
 </script>
 
 <style lang="scss" scoped>
-    .system-table-box {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        height: 100%;
+.system-table-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
 
-        .system-table {
-            flex: 1;
-            height: 100%;
-        }
+  .system-table {
+    flex: 1;
+    height: 100%;
+  }
 
-        .system-page {
-            margin-top: 20px;
-        }
-    }
+  .system-page {
+    margin-top: 20px;
+  }
+}
 </style>
