@@ -1,8 +1,13 @@
 export interface loadDataPage {
     page: number,
-    pageSize: number
-    // total: number
+    pageSize: number,
+    skip: number
 }
+// export type loadDataPage = {
+//     page: number,
+//     pageSize: number,
+//     skip: number
+// }
 export interface loadDataCallback  { Success: (data: any) => void, Fail: (reason: any) => void }
 export interface dataFormatCallback  { setData: (data: any[]) => void, setTotal?: (total: number) => void, setLoading?: (val: boolean) => void }
 

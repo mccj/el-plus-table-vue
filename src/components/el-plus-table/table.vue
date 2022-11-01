@@ -1,30 +1,33 @@
 <template>
-  <div class="system-table-box" v-loading="listState.loading">
-    <!-- <slot name="tool" :State="listState" :Filters="filters" :Operation="{ QuerySearch: () => init() }">
-  </slot>
-    <slot name="content" :State="listState" :DataTotal="innerTotal" :DataItem="innerData ?? innerDatas"
-      :Operation="{ QuerySearch: () => init() }">
-      <slot :State="listState" :DataTotal="innerTotal" :DataItem="item" v-for="item in innerDatas"
-        :Operation="{ QuerySearch: () => init() }">
-        {{ item }}
-      </slot>
-    </slot>
--->
-    <el-table v-bind="$attrs" ref="table" class="system-table" border height="100%" :data="innerDatas"
-      @selection-change="handleSelectionChange">
-      <el-table-column type="selection" align="center" width="50" v-if="showSelection" />
-      <el-table-column label="序号" width="60" align="center" v-if="showIndex">
-        <template #default="scope">
-          {{ (currentPage - 1) * innerPageSize + scope.$index + 1 }}
-        </template>
-      </el-table-column>
-      <slot></slot>
-    </el-table>
-    <el-pagination v-if="showPage" background class="system-page" :layout="pageLayout" :page-sizes="pageSizes"
-      :total="innerTotal" v-model:current-page="currentPage" v-model:page-size="innerPageSize"
-      :default-page-size="pageSize" :default-current-page="currentPage">
-    </el-pagination>
-  </div>
+    <div class="system-table-box" v-loading="listState.loading">
+        <!-- <slot name="tool" :State="listState" :Filters="filters" :Operation="{ QuerySearch: () => init() }">
+          </slot>
+            <slot name="content" :State="listState" :DataTotal="innerTotal" :DataItem="innerData ?? innerDatas"
+              :Operation="{ QuerySearch: () => init() }">
+              <slot :State="listState" :DataTotal="innerTotal" :DataItem="item" v-for="item in innerDatas"
+                :Operation="{ QuerySearch: () => init() }">
+                {{ item }}
+              </slot>
+            </slot>
+        -->
+        <el-table v-bind="$attrs" ref="table" class="system-table" border height="100%" :data="innerDatas"
+                  @selection-change="handleSelectionChange">
+            <el-table-column type="selection" align="center" width="50" v-if="showSelection" />
+            <el-table-column label="序号" width="60" align="center" v-if="showIndex">
+                <template #default="scope">
+                    {{ (currentPage - 1) * innerPageSize + scope.$index + 1 }}
+                </template>
+            </el-table-column>
+            <slot>
+                <el-table-column v-for="property in Object.keys(innerDatas.length > 0 ? innerDatas[0] : {})" :key="property"
+                                 :prop="property" :label="property" />
+            </slot>
+        </el-table>
+        <el-pagination v-if="showPage" background class="system-page" :layout="pageLayout" :page-sizes="pageSizes"
+                       :total="innerTotal" v-model:current-page="currentPage" v-model:page-size="innerPageSize"
+                       :default-page-size="pageSize" :default-current-page="currentPage">
+        </el-pagination>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -170,6 +173,7 @@ const loadData = async (done?: () => any) => {
   let info: loadDataPage = {
     page: currentPage.value,
     pageSize: innerPageSize.value,
+    skip: (currentPage.value - 1) * innerPageSize.value
     // start: this.innerStart,
     // end: this.innerEnd,
     // sort: JSON.parse(JSON.stringify(this.sortData)),
@@ -251,11 +255,11 @@ const loadData = async (done?: () => any) => {
       props.dataFormat(data, { setData: fun.setData, setTotal: fun.setTotal });
     } else {
       // debugger
-      let tl = data.total ?? data.Total;
+      let tl = data.total ?? data.Total ?? data.totalCount;
       // console.log(tl);
       tl && fun.setTotal(tl);
 
-      let dt = data.data ?? data.Data ?? data.rows ?? data.Rows;
+      let dt = data.data ?? data.Data ?? data.rows ?? data.Rows ?? data.items ?? data.Items;
       if (Array.isArray(dt)) {
         fun.setData(dt);
       } else if (Array.isArray(data)) {
@@ -322,7 +326,7 @@ const loadData = async (done?: () => any) => {
 
     listState.loading = false;
     done && done()
-    // console.log(data); 
+    // console.log(data);
   }).catch(() => {
     // debugger
     listState.loading = false;
@@ -359,20 +363,20 @@ const getData = (param: loadDataPage): Promise<any> => {
 </script>
 
 <style lang="scss" scoped>
-.system-table-box {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  height: 100%;
+    .system-table-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        height: 100%;
 
-  .system-table {
-    flex: 1;
-    height: 100%;
-  }
+        .system-table {
+            flex: 1;
+            height: 100%;
+        }
 
-  .system-page {
-    margin-top: 20px;
-  }
-}
+        .system-page {
+            margin-top: 20px;
+        }
+    }
 </style>
