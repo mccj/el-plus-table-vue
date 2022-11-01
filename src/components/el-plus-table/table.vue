@@ -34,6 +34,7 @@
 import { reactive, ref, onActivated, onMounted, watch, withDefaults } from 'vue'
 import type { loadDataPage, loadDataCallback, dataFormatCallback, tableExpose } from './table'
 import { isPromise } from './table'
+// import { ElTable, ElTableColumn, ElPagination } from 'element-plus'
 
 const props = withDefaults(defineProps<{
   showSelection?: boolean, // 是否展示选择框，默认否
