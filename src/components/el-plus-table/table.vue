@@ -88,7 +88,11 @@ const listState = reactive({
 });
 
 
-// watch(() => props.param, () => init)
+watch(() => JSON.stringify(props.param), (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    loadDataDelay();
+  }
+}, { deep: true })
 
 watch(() => props.pageIndex, (newValue, oldValue) => {
   if (newValue !== currentPage.value) {
