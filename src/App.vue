@@ -1,4 +1,25 @@
 <template>
+  <ElPlusTableTools v-model="param" :showAllFiltersExtend="true">
+    <template #='slotData'>
+      <el-form-item label="标题">
+        <el-input v-model="slotData.data.filters.title" placeholder="标题" />
+      </el-form-item>
+    </template>
+    <template #fullTools='slotData'>
+      <el-form-item label="标题">
+        <splitData v-model="slotData.data.filters" :keys="['StartDate', 'EndDate']">
+          <template v-slot:default='value'>
+            <el-date-picker v-model="value.data.arror" type="daterange" range-separator="To"
+              start-placeholder="Start date" end-placeholder="End date" format="YYYY年MM月DD日"
+              value-format="YYYY-MM-DD" />
+          </template>
+        </splitData>
+      </el-form-item>
+    </template>
+    <template #buttons>
+     顶顶顶顶顶顶顶顶顶顶顶
+    </template>
+  </ElPlusTableTools>
   <ElPlusTable ref="tttt" @load-data="loadData" v-model:page-index="pageIndex" v-model:page-size="pageSize"
     :param="param" showIndex showSelection>
     <!-- <el-table-column prop="test" label="test" align="center" /> -->
@@ -16,41 +37,29 @@
 
   <splitData v-model="param" :keys="['StartDate', 'EndDate']">
     <template v-slot:default='value'>
-      <el-date-picker
-        v-model="value.data.arror"
-        type="daterange"
-        range-separator="To"
-        start-placeholder="Start date"
-        end-placeholder="End date"
-        format="YYYY年MM月DD日"
-        value-format="YYYY-MM-DD"
-      />
+      <el-date-picker v-model="value.data.arror" type="daterange" range-separator="To" start-placeholder="Start date"
+        end-placeholder="End date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" />
     </template>
   </splitData>
   <splitData v-model="param" :keys="['StartDate', 'EndDate']">
     <template v-slot:default='value'>
-      <el-date-picker
-        v-model="value.data.arror"
-        type="daterange"
-        range-separator="To"
-        start-placeholder="Start date"
-        end-placeholder="End date"
-        format="YYYY年MM月DD日"
-        value-format="YYYY-MM-DD"
-      />
+      <el-date-picker v-model="value.data.arror" type="daterange" range-separator="To" start-placeholder="Start date"
+        end-placeholder="End date" format="YYYY年MM月DD日" value-format="YYYY-MM-DD" />
     </template>
   </splitData>
-{{param}}
+  {{ param }}
   <el-divider />
 
-  <test />
+  <test1122 />
 </template>
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import ElPlusTable from "./components/el-plus-table";
+import ElPlusTableTools from "./components/el-plus-table-tools";
+
 import splitData from "./components/split-data";
-import test from "./test.vue";
+import test1122 from "./test.vue";
 import type { loadDataPage, loadDataCallback, tableExpose } from "./components/el-plus-table";
 
 const tttt = ref<tableExpose>();

@@ -5,7 +5,7 @@
 </template>
   
 <script setup lang="ts">
-import { reactive, ref, onActivated, onMounted, watch, withDefaults, computed } from 'vue'
+import { reactive, computed } from 'vue'
 
 const props = defineProps<{
   modelValue?: any,
